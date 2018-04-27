@@ -15,9 +15,9 @@ public class Lab2SortingReducer extends Reducer<Text, Text, Text, Text> {
 		BasicIntegerSet iS = new BasicIntegerSet(250);
 		
 		JSONArray ids = new JSONArray();
-		JSONArray urls = new JSONArray();
 		JSONArray title = new JSONArray();
-		JSONArray snippet = new JSONArray();
+		JSONArray docPositions = new JSONArray();
+		JSONArray snippets = new JSONArray();
 		
 		while(iter.hasNext()) {
 		    String[] vals = iter.next().toString().split(",");
@@ -25,9 +25,13 @@ public class Lab2SortingReducer extends Reducer<Text, Text, Text, Text> {
 			x = Math.abs(x);
 			if (!iS.isSet(x)) {
 				ids.put(x);
-				urls.put(vals[1]);
-				title.put(vals[2]);
-				snippet.put(vals[3]);
+				docPositions.put(vals[2]);
+				title.put(vals[1]);
+				try {
+					snippets.put(vals[3]);	
+				} catch (Exception e) {
+					snippets.put("");
+				}
 				iS.set(x);
 			}
 		}
@@ -36,8 +40,8 @@ public class Lab2SortingReducer extends Reducer<Text, Text, Text, Text> {
 				.put("word", key.toString())
 				.put("docID", ids)
 				.put("title", title)
-				.put("url", urls)
-				.put("text", snippet)
+				.put("positions", docPositions)
+				.put("text", snippets)
 				.toString();
 		
 		context.write(new Text(""),new Text(jsonString));
